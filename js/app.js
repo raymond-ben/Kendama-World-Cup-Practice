@@ -2,7 +2,6 @@ import { loadTricks } from "./data.js";
 
 import {
     displayTricks,
-    updateSelectedCount,
     showTableError
 } from "./ui.js";
 
@@ -14,10 +13,60 @@ const modeButtons = document.querySelectorAll(".mode-card");
 const backHomeButton = document.querySelector("#back-home-button");
 
 const selectionTitle = document.querySelector("#selection-title");
-const selectionDescription = document.querySelector(
-    "#selection-description"
-);
+const selectionDescription = document.querySelector("#selection-description");
 
+const selectionCounter = document.querySelector("#selection-counter");
+const startPracticeButton = document.querySelector("#start-practice-button");
+
+function getSelectionRules() {
+    if (currentMode === "preliminary") {
+        return {
+            minimum: 10,
+            maximum: 10
+        };
+    }
+
+    if (currentMode === "finals") {
+        return {
+            minimum: 10,
+            maximum: 30
+        };
+    }
+
+    return {
+        minimum: 0,
+        maximum: 0
+    };
+}
+
+function updateSelectionControls() {
+    const rules = getSelectionRules();
+    const selectedTotal = selectedTrickIds.size;
+
+    if (currentMode === "preliminary") {
+        selectionCounter.innerHTML = `
+            Selected:
+            <strong id="selected-count">
+                ${selectedTotal}
+            </strong>
+            / ${rules.maximum}
+        `;
+    }
+
+    if (currentMode === "finals") {
+        selectionCounter.innerHTML = `
+            Selected:
+            <strong id="selected-count">${selectedTotal}</strong>
+            / ${rules.maximum} (Minimum ${rules.minimum})
+        `;
+    }
+
+        const validSelection =
+            selectedTotal >= rules.minimum &&
+            selectedTotal <= rules.maximum;
+
+        startPracticeButton.disabled = !validSelection;
+    }
 
 let currentMode = null;
 let allTricks = [];
@@ -34,7 +83,7 @@ function showScreen(screenToShow) {
 
 function getTricksForMode(mode) {
     if (mode === "preliminary") {
-        return allTricks.filter((trick) => trick.qualifier);
+        return allTricks;
     }
 
     if (mode === "finals") {
@@ -46,13 +95,31 @@ function getTricksForMode(mode) {
 
 
 function handleTrickSelection(trick, isSelected) {
+    const rules = getSelectionRules();
+
+    if (
+        isSelected &&
+        selectedTrickIds.size >= rules.maximum
+    ) {
+        return;
+    }
+
     if (isSelected) {
         selectedTrickIds.add(trick.id);
     } else {
         selectedTrickIds.delete(trick.id);
     }
 
-    updateSelectedCount(selectedTrickIds.size);
+    const availableTricks = getTricksForMode(currentMode);
+
+    displayTricks(
+        availableTricks,
+        selectedTrickIds,
+        handleTrickSelection,
+        rules.maximum
+    );
+
+    updateSelectionControls();
 }
 
 
@@ -78,13 +145,16 @@ function openSelectionScreen(mode) {
 
     const availableTricks = getTricksForMode(mode);
 
+    const rules = getSelectionRules();
+
     displayTricks(
         availableTricks,
         selectedTrickIds,
-        handleTrickSelection
+        handleTrickSelection,
+        rules.maximum
     );
 
-    updateSelectedCount(0);
+    updateSelectionControls();
     showScreen(selectionScreen);
 }
 
@@ -92,7 +162,7 @@ function openSelectionScreen(mode) {
 function returnHome() {
     currentMode = null;
     selectedTrickIds.clear();
-    updateSelectedCount(0);
+   startPracticeButton.disabled = true;
 
     showScreen(homeScreen);
 }
@@ -122,3 +192,11 @@ backHomeButton.addEventListener("click", returnHome);
 
 
 startApp();
+
+startPracticeButton.addEventListener("click", () => {
+    const selectedTricks = allTricks.filter((trick) =>
+        selectedTrickIds.has(trick.id)
+    );
+
+    console.log("Starting practice with:", selectedTricks);
+});

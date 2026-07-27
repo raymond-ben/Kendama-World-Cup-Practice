@@ -1,15 +1,18 @@
 const trickTableBody = document.querySelector("#trick-table-body");
-const selectedCount = document.querySelector("#selected-count");
 const tableMessage = document.querySelector("#table-message");
 
 
-export function displayTricks(tricks, selectedTrickIds, onSelectionChange) {
+export function displayTricks(
+    tricks,
+    selectedTrickIds,
+    onSelectionChange,
+    maximumSelections
+) {
     trickTableBody.innerHTML = "";
 
     if (tricks.length === 0) {
         tableMessage.textContent =
             "No tricks are available for this practice mode.";
-
         return;
     }
 
@@ -25,6 +28,13 @@ export function displayTricks(tricks, selectedTrickIds, onSelectionChange) {
         checkbox.className = "trick-checkbox";
         checkbox.value = trick.id;
         checkbox.checked = selectedTrickIds.has(trick.id);
+
+        const selectionLimitReached =
+            selectedTrickIds.size >= maximumSelections;
+
+        checkbox.disabled =
+            selectionLimitReached &&
+            !selectedTrickIds.has(trick.id);
 
         checkbox.setAttribute(
             "aria-label",
@@ -59,11 +69,6 @@ export function displayTricks(tricks, selectedTrickIds, onSelectionChange) {
 
         trickTableBody.appendChild(row);
     });
-}
-
-
-export function updateSelectedCount(count) {
-    selectedCount.textContent = count;
 }
 
 
