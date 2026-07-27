@@ -1,0 +1,56 @@
+[
+    {
+        "id": 1,
+        "level": 1,
+        "trickNumber": 1,
+        "name": "Big Cup",
+        "points": 1,
+        "qualifier": true,
+        "finals": false
+    },
+    {
+        "id": 2,
+        "level": 1,
+        "trickNumber": 2,
+        "name": "Small Cup",
+        "points": 1,
+        "qualifier": true,
+        "finals": false
+    },
+    {
+        "id": 3,
+        "level": 2,
+        "trickNumber": 1,
+        "name": "Around Japan",
+        "points": 2,
+        "qualifier": true,
+        "finals": false
+    },
+    {
+        "id": 4,
+        "level": 3,
+        "trickNumber": 1,
+        "name": "Airplane",
+        "points": 3,
+        "qualifier": true,
+        "finals": true
+    },
+    {
+        "id": 5,
+        "level": 7,
+        "trickNumber": 1,
+        "name": "Bird, Kenflip Bird, 1 Turn Spike",
+        "points": 7,
+        "qualifier": true,
+        "finals": true
+    },
+    {
+        "id": 6,
+        "level": 11,
+        "trickNumber": 1,
+        "name": "Level 11 Example Trick",
+        "points": 11,
+        "qualifier": false,
+        "finals": true
+    }
+]
