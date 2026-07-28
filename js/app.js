@@ -2,6 +2,7 @@ import { loadTricks } from "./data.js";
 
 import {
     displayTricks,
+    displayLevelFilters,
     showTableError
 } from "./ui.js";
 
@@ -45,11 +46,15 @@ function updateSelectionControls() {
 
     if (currentMode === "preliminary") {
         selectionCounter.innerHTML = `
-            Selected:
-            <strong id="selected-count">
-                ${selectedTotal}
-            </strong>
-            / ${rules.maximum}
+            <span>
+                Round 1:
+                <strong>${preliminaryRoundOneIds.size} / 5</strong>
+             </span>
+
+            <span>
+                Round 2:
+                <strong>${preliminaryRoundTwoIds.size} / 5</strong>
+            </span>
         `;
     }
 
@@ -61,9 +66,19 @@ function updateSelectionControls() {
         `;
     }
 
-        const validSelection =
-            selectedTotal >= rules.minimum &&
-            selectedTotal <= rules.maximum;
+        let validSelection = false;
+
+        if (currentMode === "preliminary") {
+            validSelection =
+                preliminaryRoundOneIds.size === 5 &&
+                preliminaryRoundTwoIds.size === 5;
+        }
+
+        if (currentMode === "finals") {
+            validSelection =
+                selectedTotal >= rules.minimum &&
+                selectedTotal <= rules.maximum;
+        }
 
         startPracticeButton.disabled = !validSelection;
     }
@@ -71,6 +86,10 @@ function updateSelectionControls() {
 let currentMode = null;
 let allTricks = [];
 let selectedTrickIds = new Set();
+let selectedLevels = new Set();
+
+let preliminaryRoundOneIds = new Set();
+let preliminaryRoundTwoIds = new Set();
 
 
 function showScreen(screenToShow) {
@@ -93,6 +112,55 @@ function getTricksForMode(mode) {
     return [];
 }
 
+function getVisibleTricks() {
+    const availableTricks = getTricksForMode(currentMode);
+
+    if (selectedLevels.size === 0) {
+        return availableTricks;
+    }
+
+    return availableTricks.filter((trick) =>
+        selectedLevels.has(trick.level)
+    );
+}
+
+function handleLevelToggle(level) {
+    if (selectedLevels.has(level)) {
+        selectedLevels.delete(level);
+    } else {
+        selectedLevels.add(level);
+    }
+
+    renderSelectionScreen();
+}
+
+function renderSelectionScreen() {
+    const rules = getSelectionRules();
+    const availableTricks = getTricksForMode(currentMode);
+    const visibleTricks = getVisibleTricks();
+
+    const levels = [
+        ...new Set(
+            availableTricks.map((trick) => trick.level)
+        )
+    ].sort((a, b) => a - b);
+
+    displayLevelFilters(
+        levels,
+        selectedLevels,
+        handleLevelToggle
+    );
+
+    displayTricks(
+        visibleTricks,
+        selectedTrickIds,
+        handleTrickSelection,
+        rules.maximum,
+        currentMode
+    );
+
+    updateSelectionControls();
+}
 
 function handleTrickSelection(trick, isSelected) {
     const rules = getSelectionRules();
@@ -104,28 +172,40 @@ function handleTrickSelection(trick, isSelected) {
         return;
     }
 
-    if (isSelected) {
-        selectedTrickIds.add(trick.id);
-    } else {
-        selectedTrickIds.delete(trick.id);
+    if (currentMode === "preliminary") {
+        if (isSelected) {
+            selectedTrickIds.add(trick.id);
+
+            if (preliminaryRoundOneIds.size < 5) {
+                preliminaryRoundOneIds.add(trick.id);
+            } else {
+                preliminaryRoundTwoIds.add(trick.id);
+            }
+        } else {
+            selectedTrickIds.delete(trick.id);
+            preliminaryRoundOneIds.delete(trick.id);
+            preliminaryRoundTwoIds.delete(trick.id);
+        }
     }
 
-    const availableTricks = getTricksForMode(currentMode);
+    if (currentMode === "finals") {
+        if (isSelected) {
+            selectedTrickIds.add(trick.id);
+        } else {
+            selectedTrickIds.delete(trick.id);
+        }
+    }
 
-    displayTricks(
-        availableTricks,
-        selectedTrickIds,
-        handleTrickSelection,
-        rules.maximum
-    );
-
-    updateSelectionControls();
+    renderSelectionScreen();
 }
 
 
 function openSelectionScreen(mode) {
     currentMode = mode;
     selectedTrickIds.clear();
+    selectedLevels.clear();
+    preliminaryRoundOneIds.clear();
+    preliminaryRoundTwoIds.clear();
 
     if (mode === "preliminary") {
         selectionTitle.textContent =
@@ -143,18 +223,7 @@ function openSelectionScreen(mode) {
             "Select between 10 and 30 tricks for your three-minute round.";
     }
 
-    const availableTricks = getTricksForMode(mode);
-
-    const rules = getSelectionRules();
-
-    displayTricks(
-        availableTricks,
-        selectedTrickIds,
-        handleTrickSelection,
-        rules.maximum
-    );
-
-    updateSelectionControls();
+    renderSelectionScreen();
     showScreen(selectionScreen);
 }
 
@@ -162,6 +231,10 @@ function openSelectionScreen(mode) {
 function returnHome() {
     currentMode = null;
     selectedTrickIds.clear();
+    selectedLevels.clear();
+    preliminaryRoundOneIds.clear();
+    preliminaryRoundTwoIds.clear();
+
    startPracticeButton.disabled = true;
 
     showScreen(homeScreen);
@@ -194,9 +267,26 @@ backHomeButton.addEventListener("click", returnHome);
 startApp();
 
 startPracticeButton.addEventListener("click", () => {
+    if (currentMode === "preliminary") {
+        const roundOneTricks = [...preliminaryRoundOneIds].map(
+            (trickId) =>
+                allTricks.find((trick) => trick.id === trickId)
+        );
+
+        const roundTwoTricks = [...preliminaryRoundTwoIds].map(
+            (trickId) =>
+                allTricks.find((trick) => trick.id === trickId)
+        );
+
+        console.log("Round 1:", roundOneTricks);
+        console.log("Round 2:", roundTwoTricks);
+
+        return;
+    }
+
     const selectedTricks = allTricks.filter((trick) =>
         selectedTrickIds.has(trick.id)
     );
 
-    console.log("Starting practice with:", selectedTricks);
+    console.log("Finals:", selectedTricks);
 });

@@ -304,3 +304,46 @@ h2 {
     align-items: center;
     gap: 20px;
 }
+
+.level-filter {
+    margin-bottom: 1.5rem;
+}
+
+.level-filter-label {
+    margin-bottom: 0.75rem;
+    font-weight: 700;
+}
+
+.level-filter-options {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+}
+
+.level-filter-button {
+    padding: 8px 12px;
+
+    background: white;
+    border: 1px solid #cfcfcf;
+    border-radius: 999px;
+
+    cursor: pointer;
+    font: inherit;
+    font-weight: 600;
+}
+
+.level-filter-button:hover {
+    border-color: #777;
+}
+
+.level-filter-button.active {
+    color: white;
+    background: var(--accent);
+    border-color: var(--accent);
+}
+
+#selection-counter {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px 20px;
+}

@@ -1,12 +1,13 @@
 const trickTableBody = document.querySelector("#trick-table-body");
 const tableMessage = document.querySelector("#table-message");
-
+const levelFilterOptions = document.querySelector("#level-filter-options");
 
 export function displayTricks(
     tricks,
     selectedTrickIds,
     onSelectionChange,
-    maximumSelections
+    maximumSelections,
+    currentMode
 ) {
     trickTableBody.innerHTML = "";
 
@@ -57,7 +58,10 @@ export function displayTricks(
         nameCell.textContent = trick.name;
 
         const pointsCell = document.createElement("td");
-        pointsCell.textContent = trick.points;
+        pointsCell.textContent =
+            currentMode === "finals"
+                ? trick.finalsPoints
+                : trick.points;
 
         row.append(
             selectCell,
@@ -71,6 +75,31 @@ export function displayTricks(
     });
 }
 
+export function displayLevelFilters(
+    levels,
+    selectedLevels,
+    onLevelToggle
+) {
+    levelFilterOptions.innerHTML = "";
+
+    levels.forEach((level) => {
+        const button = document.createElement("button");
+
+        button.type = "button";
+        button.className = "level-filter-button";
+        button.textContent = `Level ${level}`;
+
+        if (selectedLevels.has(level)) {
+            button.classList.add("active");
+        }
+
+        button.addEventListener("click", () => {
+            onLevelToggle(level);
+        });
+
+        levelFilterOptions.appendChild(button);
+    });
+}
 
 export function showTableError(message) {
     trickTableBody.innerHTML = "";
