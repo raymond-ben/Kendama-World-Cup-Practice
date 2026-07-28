@@ -22,6 +22,9 @@ export function displayTricks(
     tricks.forEach((trick) => {
         const row = document.createElement("tr");
 
+        row.classList.add("trick-row");
+        row.style.cursor = "pointer";
+
         const selectCell = document.createElement("td");
         const checkbox = document.createElement("input");
 
@@ -29,6 +32,10 @@ export function displayTricks(
         checkbox.className = "trick-checkbox";
         checkbox.value = trick.id;
         checkbox.checked = selectedTrickIds.has(trick.id);
+
+        if (checkbox.checked) {
+            row.classList.add("selected");
+        }
 
         const selectionLimitReached =
             selectedTrickIds.size >= maximumSelections;
@@ -44,6 +51,27 @@ export function displayTricks(
 
         checkbox.addEventListener("change", () => {
             onSelectionChange(trick, checkbox.checked);
+        });
+
+        row.addEventListener("click", (event) => {
+            // Let the checkbox handle its own click
+            if (
+                event.target.closest('input[type="checkbox"]')
+            ) {
+                return;
+            }
+
+            // Do not allow row clicks to bypass the selection limit
+            if (checkbox.disabled) {
+                return;
+            }
+
+            checkbox.checked = !checkbox.checked;
+
+            onSelectionChange(
+                trick,
+                checkbox.checked
+            );
         });
 
         selectCell.appendChild(checkbox);

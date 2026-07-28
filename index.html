@@ -102,13 +102,20 @@
                     Selected:
                     <strong id="selected-count">0</strong>
                 </p>
+            </div>
+
+            <div class="selection-actions">
+                <button
+                    id="clear-selection-button"
+                    class="secondary-button"
+                    type="button">
+                    Clear Selection
+                </button>
 
                 <button
                     id="start-practice-button"
                     class="primary-button"
-                    type="button"
-                    disabled
-                >
+                    disabled>
                     Start Practice
                 </button>
             </div>
@@ -132,6 +139,65 @@
             </div>
 
             <p id="table-message" class="table-message"></p>
+
+        </section>
+
+            <!-- Practice Screen -->
+        <section id="practice-screen" class="screen">
+
+             <div class="practice-heading">
+                <p id="practice-mode-label" class="practice-mode-label"></p>
+                <h2 id="practice-round-title">Practice Round</h2>
+            </div>
+
+            <div
+                id="practice-timer"
+                class="practice-timer"
+                aria-live="polite"
+            >
+                3:00
+            </div>
+
+            <p
+                id="practice-message"
+                class="practice-message"
+                aria-live="polite"
+            >
+                Review your tricks, then start the timer when ready.
+            </p>
+
+            <ol
+                id="practice-trick-list"
+                class="practice-trick-list"
+            >
+                <!-- JavaScript adds the selected tricks here -->
+            </ol>
+
+            <div class="practice-actions">
+                <button
+                    id="start-timer-button"
+                    class="primary-button"
+                    type="button"
+                >
+                    Start Timer
+                </button>
+
+                <button
+                    id="next-round-button"
+                    class="primary-button hidden"
+                    type="button"
+                >
+                    Continue to Round 2
+                </button>
+
+                <button
+                    id="exit-practice-button"
+                    class="secondary-button"
+                    type="button"
+                >
+                    ← Back to Trick Selection
+                </button>
+            </div>
 
         </section>
 

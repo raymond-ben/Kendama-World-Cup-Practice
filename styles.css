@@ -347,3 +347,191 @@ h2 {
     flex-wrap: wrap;
     gap: 8px 20px;
 }
+
+.hidden {
+    display: none !important;
+}
+
+/* Practice screen */
+
+.practice-heading {
+    text-align: center;
+    margin-bottom: 1rem;
+}
+
+.practice-heading h2 {
+    margin: 0;
+}
+
+.practice-mode-label {
+    margin: 0 0 0.35rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+}
+
+.practice-timer {
+    margin: 1.5rem 0 0.75rem;
+
+    text-align: center;
+    font-size: clamp(4rem, 14vw, 7rem);
+    font-weight: 800;
+    line-height: 1;
+    font-variant-numeric: tabular-nums;
+}
+
+.practice-timer.countdown {
+    font-size: clamp(6rem, 20vw, 10rem);
+}
+
+.practice-timer.finished {
+    font-size: clamp(2.5rem, 10vw, 5rem);
+}
+
+.practice-message {
+    min-height: 1.5em;
+    margin: 0 auto 1.5rem;
+
+    text-align: center;
+    font-weight: 600;
+}
+
+.practice-trick-list {
+    display: grid;
+    gap: 0.75rem;
+
+    margin: 0;
+    padding-left: 0;
+
+    list-style: none;
+    counter-reset: practice-tricks;
+}
+
+.practice-trick-item {
+    counter-increment: practice-tricks;
+
+    display: grid;
+    grid-template-columns: auto 1fr auto;
+    align-items: center;
+    gap: 0.85rem;
+
+    padding: 1rem;
+
+    border: 1px solid #d8d8d8;
+    border-radius: 12px;
+    background: white;
+}
+
+.practice-trick-item::before {
+    content: counter(practice-tricks);
+
+    display: grid;
+    place-items: center;
+
+    width: 2rem;
+    height: 2rem;
+
+    border-radius: 50%;
+    background: var(--accent);
+    color: white;
+    font-weight: 700;
+}
+
+.practice-trick-name {
+    font-weight: 700;
+}
+
+.practice-trick-level {
+    white-space: nowrap;
+    font-size: 0.9rem;
+    font-weight: 600;
+}
+
+.practice-actions {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 0.75rem;
+
+    margin-top: 1.5rem;
+}
+
+@media (max-width: 600px) {
+    .practice-trick-item {
+        grid-template-columns: auto 1fr;
+    }
+
+    .practice-trick-level {
+        grid-column: 2;
+    }
+
+    .practice-actions {
+        flex-direction: column;
+    }
+
+    .practice-actions button {
+        width: 100%;
+    }
+}
+
+.secondary-button {
+    padding: 0.75rem 1.1rem;
+
+    background: transparent;
+    color: var(--accent);
+
+    border: 2px solid var(--accent);
+    border-radius: 10px;
+
+    font: inherit;
+    font-weight: 700;
+
+    cursor: pointer;
+
+    transition:
+        background-color 0.2s ease,
+        color 0.2s ease,
+        transform 0.2s ease;
+}
+
+.secondary-button:hover {
+    background: var(--accent);
+    color: white;
+}
+
+.secondary-button:active {
+    transform: translateY(1px);
+}
+
+.secondary-button:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+.trick-row {
+    cursor: pointer;
+    user-select: none;
+}
+
+.trick-row:hover {
+    background: #f5f8fc;
+}
+
+.trick-row {
+    cursor: pointer;
+    user-select: none;
+    transition: background-color 0.15s ease;
+}
+
+.trick-row:hover {
+    background-color: #f5f8fc;
+}
+
+.trick-row.selected {
+    background-color: #eef4ff;
+}
+
+.trick-row:has(.trick-checkbox:disabled) {
+    cursor: not-allowed;
+    opacity: 0.6;
+}
