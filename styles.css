@@ -176,6 +176,10 @@ h2 {
     margin-bottom: 30px;
 }
 
+.selection-actions {
+    margin-bottom: 1.5rem;
+}
+
 .selection-status {
     display: flex;
     margin-bottom: 20px;
@@ -534,4 +538,85 @@ h2 {
 .trick-row:has(.trick-checkbox:disabled) {
     cursor: not-allowed;
     opacity: 0.6;
+}
+
+.results-header {
+    text-align: center;
+    margin-bottom: 2rem;
+}
+
+#results-content {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+    margin-bottom: 2rem;
+}
+
+.result-section {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+.result-section h3 {
+    margin-bottom: 0.5rem;
+}
+
+.result-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+
+    padding: 0.75rem 1rem;
+
+    border: 1px solid #ddd;
+    border-radius: 10px;
+}
+
+.result-left {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+}
+
+.result-name {
+    font-weight: 500;
+}
+
+.result-points {
+    font-weight: 700;
+    color: var(--accent);
+}
+.results-score {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+
+    margin: 2rem 0;
+    padding: 1rem;
+
+    border-top: 2px solid #ddd;
+    font-size: 1.3rem;
+    font-weight: 700;
+}
+
+#results-total-score {
+    font-size: 2rem;
+}
+.results-actions {
+    display: flex;
+    justify-content: center;
+    gap: 1rem;
+    flex-wrap: wrap;
+}
+.result-info {
+    display: flex;
+    flex-direction: column;
+    gap: 0.15rem;
+}
+
+.result-level,
+.result-name {
+    display: block;
 }

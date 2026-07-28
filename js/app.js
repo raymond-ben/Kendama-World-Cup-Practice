@@ -54,7 +54,31 @@ const exitPracticeButton = document.querySelector(
     "#exit-practice-button"
 );
 
+const resultsScreen =
+    document.querySelector("#results-screen");
 
+const resultsModeLabel =
+    document.querySelector("#results-mode-label");
+
+const resultsTitle =
+    document.querySelector("#results-title");
+
+const resultsContent =
+    document.querySelector("#results-content");
+
+const resultsTotalScore =
+    document.querySelector("#results-total-score");
+
+const practiceAgainButton =
+    document.querySelector("#practice-again-button");
+
+const newTricksButton =
+    document.querySelector("#new-tricks-button");
+
+const resultsHomeButton =
+    document.querySelector("#results-home-button");
+
+const landedTrickIds = new Set();
 /* --------------------------------------------------
    Application state
 -------------------------------------------------- */
@@ -85,6 +109,7 @@ function showScreen(screenToShow) {
     homeScreen.classList.remove("active");
     selectionScreen.classList.remove("active");
     practiceScreen.classList.remove("active");
+    resultsScreen.classList.remove("active");
 
     screenToShow.classList.add("active");
 }
@@ -357,19 +382,20 @@ function displayPracticeTricks(tricks) {
         const item = document.createElement("li");
         item.className = "practice-trick-item";
 
+        const level = document.createElement("span");
+        level.className = "practice-trick-level";
+        level.textContent =
+            `Level ${trick.level}.${trick.trickNumber}`;
+
         const name = document.createElement("span");
         name.className = "practice-trick-name";
         name.textContent = trick.name;
 
-        const level = document.createElement("span");
-        level.className = "practice-trick-level";
-        level.textContent = `Level ${trick.level}`;
+        item.append(level, name);
 
-        item.append(name, level);
         practiceTrickList.appendChild(item);
     });
 }
-
 
 /* --------------------------------------------------
    Timer helpers
@@ -519,6 +545,10 @@ function finishPracticeRound() {
         startTimerButton.classList.add("hidden");
         nextRoundButton.classList.add("hidden");
 
+        setTimeout(() => {
+            openResultsScreen();
+        }, 1000);
+
         return;
     }
 
@@ -527,9 +557,216 @@ function finishPracticeRound() {
 
     startTimerButton.classList.add("hidden");
     nextRoundButton.classList.add("hidden");
+
+    setTimeout(() => {
+        openResultsScreen();
+    }, 1000);
 }
 
+function calculateResultsScore() {
+    let totalScore = 0;
 
+    const resultTricks =
+        currentMode === "preliminary"
+            ? [
+                ...getTricksFromIds(preliminaryRoundOneIds),
+                ...getTricksFromIds(preliminaryRoundTwoIds)
+            ]
+            : getTricksFromIds(selectedTrickIds);
+
+    landedTrickIds.forEach((trickId) => {
+        const trick = resultTricks.find(
+            (item) => item.id === trickId
+        );
+
+        if (!trick) {
+            return;
+        }
+
+        if (currentMode === "preliminary") {
+            totalScore += Number(trick.points) || 0;
+            return;
+        }
+
+        const level = Number(trick.level);
+
+        let trickScore = level ** 2;
+
+        if (level === 11) {
+            trickScore += 30;
+        }
+
+        if (level === 12) {
+            trickScore += 50;
+        }
+
+        totalScore += trickScore;
+    });
+
+    if (
+        currentMode === "finals" &&
+        resultTricks.length > 0 &&
+        landedTrickIds.size === resultTricks.length
+    ) {
+        const fullMarkBonus = resultTricks.reduce(
+            (total, trick) => {
+                return total + Number(trick.level);
+            },
+            0
+        );
+
+        totalScore += fullMarkBonus;
+    }
+
+    resultsTotalScore.textContent = totalScore;
+}
+
+function createResultSection(title, tricks) {
+    const section = document.createElement("section");
+    section.className = "result-section";
+
+    const heading = document.createElement("h3");
+    heading.textContent = title;
+
+    section.appendChild(heading);
+
+    tricks.forEach((trick) => {
+        const row = document.createElement("label");
+        row.className = "result-row";
+
+        const leftSide = document.createElement("span");
+        leftSide.className = "result-left";
+
+        const checkbox = document.createElement("input");
+        checkbox.type = "checkbox";
+        checkbox.className = "trick-checkbox";
+        checkbox.checked = landedTrickIds.has(trick.id);
+
+        const trickInfo = document.createElement("div");
+        trickInfo.className = "result-info";
+
+        const level = document.createElement("span");
+        level.className = "result-level";
+        level.textContent =
+            `Level ${trick.level}.${trick.trickNumber}`;
+
+        const trickName = document.createElement("span");
+        trickName.className = "result-name";
+        trickName.textContent = trick.name;
+
+        trickInfo.append(level, trickName);
+
+        const points = document.createElement("span");
+        points.className = "result-points";
+
+        let pointValue;
+
+        if (currentMode === "finals") {
+            const level = Number(trick.level);
+
+            pointValue = level ** 2;
+
+            if (level === 11) {
+                pointValue += 30;
+            }
+
+            if (level === 12) {
+                pointValue += 50;
+            }
+        } else {
+            pointValue = trick.points;
+        }
+
+        points.textContent =
+            `${pointValue} ${Number(pointValue) === 1 ? "point" : "points"}`;
+
+        checkbox.addEventListener("change", () => {
+            if (checkbox.checked) {
+                landedTrickIds.add(trick.id);
+            } else {
+                landedTrickIds.delete(trick.id);
+            }
+
+            row.classList.toggle(
+                "landed",
+                checkbox.checked
+            );
+
+            calculateResultsScore();
+        });
+
+        row.classList.toggle(
+            "landed",
+            checkbox.checked
+        );
+
+        leftSide.append(
+            checkbox,
+            trickInfo
+        );
+
+        row.append(
+            leftSide,
+            points
+        );
+
+        section.appendChild(row);
+    });
+
+    return section;
+}
+function renderResults() {
+    resultsContent.innerHTML = "";
+
+    if (currentMode === "preliminary") {
+        resultsModeLabel.textContent =
+            "Preliminary Practice Results";
+
+        resultsTitle.textContent =
+            "How did you do?";
+
+        const roundOneTricks =
+            getTricksFromIds(preliminaryRoundOneIds);
+
+        const roundTwoTricks =
+            getTricksFromIds(preliminaryRoundTwoIds);
+
+        resultsContent.append(
+            createResultSection(
+                "Round 1",
+                roundOneTricks
+            ),
+            createResultSection(
+                "Round 2",
+                roundTwoTricks
+            )
+        );
+    } else {
+        resultsModeLabel.textContent =
+            "Finals Practice Results";
+
+        resultsTitle.textContent =
+            "How did you do?";
+
+        const finalsTricks =
+            getTricksFromIds(selectedTrickIds);
+
+        resultsContent.appendChild(
+            createResultSection(
+                "Finals",
+                finalsTricks
+            )
+        );
+    }
+
+    calculateResultsScore();
+}
+function openResultsScreen() {
+    landedTrickIds.clear();
+
+    renderResults();
+    showScreen(resultsScreen);
+}
 /* --------------------------------------------------
    Practice screen setup
 -------------------------------------------------- */
