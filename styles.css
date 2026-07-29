@@ -620,3 +620,40 @@ h2 {
 .result-name {
     display: block;
 }
+
+.score-breakdown {
+    margin: 2rem 0;
+}
+
+.score-breakdown h3 {
+    margin-bottom: 1rem;
+}
+
+.score-line,
+.score-total {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 1rem;
+}
+
+.score-line {
+    padding: 0.4rem 0;
+}
+
+.bonus-line {
+    font-weight: 700;
+    color: var(--accent);
+}
+
+.score-total {
+    margin-top: 1rem;
+    padding-top: 1rem;
+    border-top: 2px solid #ddd;
+    font-size: 1.3rem;
+    font-weight: 700;
+}
+
+#results-total-score {
+    font-size: 2rem;
+}

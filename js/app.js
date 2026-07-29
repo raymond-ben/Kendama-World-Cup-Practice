@@ -79,6 +79,27 @@ const resultsHomeButton =
     document.querySelector("#results-home-button");
 
 const landedTrickIds = new Set();
+
+const resultsBaseScore =
+    document.querySelector("#results-base-score");
+
+const resultsLevel11Bonus =
+    document.querySelector("#results-level-11-bonus");
+
+const resultsLevel12Bonus =
+    document.querySelector("#results-level-12-bonus");
+
+const resultsFullMarksBonus =
+    document.querySelector("#results-full-marks-bonus");
+
+const level11BonusRow =
+    document.querySelector("#level-11-bonus-row");
+
+const level12BonusRow =
+    document.querySelector("#level-12-bonus-row");
+
+const fullMarksBonusRow =
+    document.querySelector("#full-marks-bonus-row");
 /* --------------------------------------------------
    Application state
 -------------------------------------------------- */
@@ -564,8 +585,6 @@ function finishPracticeRound() {
 }
 
 function calculateResultsScore() {
-    let totalScore = 0;
-
     const resultTricks =
         currentMode === "preliminary"
             ? [
@@ -573,6 +592,11 @@ function calculateResultsScore() {
                 ...getTricksFromIds(preliminaryRoundTwoIds)
             ]
             : getTricksFromIds(selectedTrickIds);
+
+    let baseScore = 0;
+    let level11Bonus = 0;
+    let level12Bonus = 0;
+    let fullMarksBonus = 0;
 
     landedTrickIds.forEach((trickId) => {
         const trick = resultTricks.find(
@@ -584,41 +608,69 @@ function calculateResultsScore() {
         }
 
         if (currentMode === "preliminary") {
-            totalScore += Number(trick.points) || 0;
+            baseScore += Number(trick.points) || 0;
             return;
         }
 
         const level = Number(trick.level);
 
-        let trickScore = level ** 2;
+        baseScore += level ** 2;
 
         if (level === 11) {
-            trickScore += 30;
+            level11Bonus += 30;
         }
 
         if (level === 12) {
-            trickScore += 50;
+            level12Bonus += 50;
         }
-
-        totalScore += trickScore;
     });
 
-    if (
+    const earnedFullMarks =
         currentMode === "finals" &&
         resultTricks.length > 0 &&
-        landedTrickIds.size === resultTricks.length
-    ) {
-        const fullMarkBonus = resultTricks.reduce(
-            (total, trick) => {
-                return total + Number(trick.level);
-            },
+        landedTrickIds.size === resultTricks.length;
+
+    if (earnedFullMarks) {
+        fullMarksBonus = resultTricks.reduce(
+            (total, trick) =>
+                total + Number(trick.level),
             0
         );
-
-        totalScore += fullMarkBonus;
     }
 
+    const totalScore =
+        baseScore +
+        level11Bonus +
+        level12Bonus +
+        fullMarksBonus;
+
+    resultsBaseScore.textContent = baseScore;
+
+    resultsLevel11Bonus.textContent =
+        `+${level11Bonus}`;
+
+    resultsLevel12Bonus.textContent =
+        `+${level12Bonus}`;
+
+    resultsFullMarksBonus.textContent =
+        `+${fullMarksBonus}`;
+
     resultsTotalScore.textContent = totalScore;
+
+    level11BonusRow.classList.toggle(
+        "hidden",
+        level11Bonus === 0
+    );
+
+    level12BonusRow.classList.toggle(
+        "hidden",
+        level12Bonus === 0
+    );
+
+    fullMarksBonusRow.classList.toggle(
+        "hidden",
+        fullMarksBonus === 0
+    );
 }
 
 function createResultSection(title, tricks) {
@@ -879,6 +931,34 @@ exitPracticeButton.addEventListener("click", () => {
     renderSelectionScreen();
     showScreen(selectionScreen);
 });
+
+practiceAgainButton.addEventListener("click", () => {
+    landedTrickIds.clear();
+
+    if (currentMode === "preliminary") {
+        const roundOneTricks =
+            getTricksFromIds(preliminaryRoundOneIds);
+
+        openPracticeRound(1, roundOneTricks);
+    } else {
+        const finalsTricks =
+            getTricksFromIds(selectedTrickIds);
+
+        openPracticeRound(1, finalsTricks);
+    }
+});
+
+newTricksButton.addEventListener("click", () => {
+    landedTrickIds.clear();
+
+    clearSelections();
+    showScreen(selectionScreen);
+});
+
+resultsHomeButton.addEventListener(
+    "click",
+    returnHome
+);
 
 
 /* --------------------------------------------------

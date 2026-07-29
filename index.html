@@ -220,13 +220,43 @@
             <div id="results-content">
                 <!-- Result trick rows will be created with JavaScript -->
             </div>
+            
+            <div class="score-breakdown">
+                <h3>Score Breakdown</h3>
 
-            <div class="results-score">
-                <span>Total Score</span>
+                <div class="score-line">
+                    <span>Base Score</span>
+                    <span id="results-base-score">0</span>
+                </div>
 
-                <strong id="results-total-score">
-                    0
-                </strong>
+                <div
+                    id="level-11-bonus-row"
+                    class="score-line hidden"
+                >
+                    <span>Level 11 Bonus</span>
+                    <span id="results-level-11-bonus">+0</span>
+                </div>
+
+                <div
+                    id="level-12-bonus-row"
+                    class="score-line hidden"
+                >
+                    <span>Level 12 Bonus</span>
+                    <span id="results-level-12-bonus">+0</span>
+                </div>
+
+                <div
+                    id="full-marks-bonus-row"
+                    class="score-line bonus-line hidden"
+                >
+                    <span>⭐ Full Marks Bonus</span>
+                    <span id="results-full-marks-bonus">+0</span>
+                </div>
+
+                <div class="score-total">
+                    <span>Total</span>
+                    <strong id="results-total-score">0</strong>
+                </div>
             </div>
 
             <div class="results-actions">
