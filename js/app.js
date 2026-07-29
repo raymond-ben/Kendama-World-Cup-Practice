@@ -504,7 +504,7 @@ function startPreparationCountdown() {
 -------------------------------------------------- */
 
 function startRoundTimer() {
-    let remainingSeconds = 10;
+    let remainingSeconds = 3 * 60;
 
     practiceTimer.classList.remove(
         "countdown",

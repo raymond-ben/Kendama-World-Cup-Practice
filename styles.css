@@ -1,3 +1,7 @@
+/* ==================================================
+   1. Design tokens
+   ================================================== */
+
 :root {
     --background: #f4f2ed;
     --surface: #ffffff;
@@ -9,22 +13,23 @@
     --focus: #1f6feb;
 }
 
+
+/* ==================================================
+   2. Reset and base styles
+   ================================================== */
+
 * {
     box-sizing: border-box;
 }
 
 body {
-    margin: 0;
     min-height: 100vh;
-
-    font-family:
-        Inter,
-        Arial,
-        Helvetica,
-        sans-serif;
+    margin: 0;
 
     color: var(--text);
     background: var(--background);
+
+    font-family: Inter, Arial, Helvetica, sans-serif;
 }
 
 button,
@@ -35,36 +40,6 @@ select {
 
 button {
     cursor: pointer;
-}
-
-.app-container {
-    width: min(100% - 32px, 1000px);
-    margin: 0 auto;
-    padding: 64px 0;
-}
-
-.screen {
-    display: none;
-}
-
-.screen.active {
-    display: block;
-}
-
-.app-header {
-    max-width: 650px;
-    margin-bottom: 40px;
-}
-
-.eyebrow {
-    margin: 0 0 10px;
-
-    color: var(--muted-text);
-
-    font-size: 0.8rem;
-    font-weight: 700;
-    letter-spacing: 0.12em;
-    text-transform: uppercase;
 }
 
 h1,
@@ -83,6 +58,45 @@ h2 {
     font-size: clamp(2rem, 5vw, 3rem);
 }
 
+
+/* ==================================================
+   3. Shared layout and utilities
+   ================================================== */
+
+.app-container {
+    width: min(100% - 32px, 1000px);
+    margin: 0 auto;
+    padding: 64px 0;
+}
+
+.screen {
+    display: none;
+}
+
+.screen.active {
+    display: block;
+}
+
+.hidden {
+    display: none !important;
+}
+
+.app-header {
+    max-width: 650px;
+    margin-bottom: 40px;
+}
+
+.eyebrow {
+    margin: 0 0 10px;
+
+    color: var(--muted-text);
+
+    font-size: 0.8rem;
+    font-weight: 700;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+}
+
 .intro,
 #selection-description {
     margin: 0;
@@ -92,6 +106,86 @@ h2 {
     font-size: 1.1rem;
     line-height: 1.6;
 }
+
+
+/* ==================================================
+   4. Buttons
+   ================================================== */
+
+.primary-button {
+    padding: 12px 18px;
+
+    color: white;
+    background: var(--accent);
+    border: 0;
+    border-radius: 10px;
+
+    font-weight: 700;
+}
+
+.primary-button:hover:not(:disabled) {
+    background: var(--accent-hover);
+}
+
+.primary-button:disabled,
+.secondary-button:disabled {
+    cursor: not-allowed;
+    opacity: 0.4;
+}
+
+.secondary-button {
+    padding: 0.75rem 1.1rem;
+
+    color: var(--accent);
+    background: transparent;
+    border: 2px solid var(--accent);
+    border-radius: 10px;
+
+    font-weight: 700;
+
+    transition:
+        background-color 0.2s ease,
+        color 0.2s ease,
+        transform 0.2s ease;
+}
+
+.secondary-button:hover:not(:disabled) {
+    color: white;
+    background: var(--accent);
+}
+
+.secondary-button:active:not(:disabled) {
+    transform: translateY(1px);
+}
+
+.text-button {
+    margin-bottom: 40px;
+    padding: 0;
+
+    color: var(--text);
+    background: transparent;
+    border: 0;
+
+    font-weight: 600;
+}
+
+.text-button:hover {
+    text-decoration: underline;
+}
+
+.mode-card:focus-visible,
+.text-button:focus-visible,
+.primary-button:focus-visible,
+.secondary-button:focus-visible,
+.level-filter-button:focus-visible {
+    outline: 3px solid var(--focus);
+    outline-offset: 4px;
+}
+
+
+/* ==================================================
+   5. Home screen
+   ================================================== */
 
 .mode-grid {
     display: grid;
@@ -125,22 +219,16 @@ h2 {
     transform: translateY(-4px);
 }
 
-.mode-card:focus-visible,
-.text-button:focus-visible {
-    outline: 3px solid var(--focus);
-    outline-offset: 4px;
-}
-
 .mode-label {
     padding: 6px 10px;
+
+    background: var(--background);
+    border-radius: 999px;
 
     font-size: 0.75rem;
     font-weight: 700;
     letter-spacing: 0.08em;
     text-transform: uppercase;
-
-    background: var(--background);
-    border-radius: 999px;
 }
 
 .mode-title {
@@ -156,36 +244,29 @@ h2 {
     line-height: 1.5;
 }
 
-.text-button {
-    margin-bottom: 40px;
-    padding: 0;
 
-    color: var(--text);
-    font-weight: 600;
-
-    background: transparent;
-    border: 0;
-}
-
-.text-button:hover {
-    text-decoration: underline;
-}
+/* ==================================================
+   6. Trick selection screen
+   ================================================== */
 
 .selection-header {
     max-width: 700px;
     margin-bottom: 30px;
 }
 
-.selection-actions {
+.selection-actions,
+.level-filter {
     margin-bottom: 1.5rem;
 }
 
 .selection-status {
     display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 20px;
+
     margin-bottom: 20px;
     padding: 16px 20px;
-
-    justify-content: space-between;
 
     background: var(--surface);
     border: 1px solid var(--border);
@@ -196,28 +277,47 @@ h2 {
     margin: 0;
 }
 
-@media (max-width: 700px) {
-    .app-container {
-        padding: 36px 0;
-    }
-
-    .mode-grid {
-        grid-template-columns: 1fr;
-    }
-
-    .mode-card {
-        min-height: 220px;
-    }
-
-        .selection-status {
-        align-items: stretch;
-        flex-direction: column;
-    }
-
-    .primary-button {
-        width: 100%;
-    }
+#selection-counter {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px 20px;
 }
+
+.level-filter-label {
+    margin-bottom: 0.75rem;
+    font-weight: 700;
+}
+
+.level-filter-options {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+}
+
+.level-filter-button {
+    padding: 8px 12px;
+
+    background: var(--surface);
+    border: 1px solid #cfcfcf;
+    border-radius: 999px;
+
+    font-weight: 600;
+}
+
+.level-filter-button:hover {
+    border-color: #777;
+}
+
+.level-filter-button.active {
+    color: white;
+    background: var(--accent);
+    border-color: var(--accent);
+}
+
+
+/* ==================================================
+   7. Trick table
+   ================================================== */
 
 .table-container {
     overflow-x: auto;
@@ -241,20 +341,15 @@ h2 {
 
 .trick-table th {
     color: var(--muted-text);
+    background: #f8f7f3;
 
     font-size: 0.75rem;
     letter-spacing: 0.08em;
     text-transform: uppercase;
-
-    background: #f8f7f3;
 }
 
 .trick-table tbody tr:last-child td {
     border-bottom: 0;
-}
-
-.trick-table tbody tr:hover {
-    background: #faf9f6;
 }
 
 .trick-table th:first-child,
@@ -273,6 +368,25 @@ h2 {
     text-align: center;
 }
 
+.trick-row {
+    cursor: pointer;
+    user-select: none;
+    transition: background-color 0.15s ease;
+}
+
+.trick-row:hover {
+    background: #f5f8fc;
+}
+
+.trick-row.selected {
+    background: #eef4ff;
+}
+
+.trick-row:has(.trick-checkbox:disabled) {
+    cursor: not-allowed;
+    opacity: 0.6;
+}
+
 .trick-checkbox {
     width: 18px;
     height: 18px;
@@ -284,83 +398,14 @@ h2 {
     color: var(--muted-text);
 }
 
-.primary-button {
-    padding: 12px 18px;
 
-    color: white;
-    font-weight: 700;
-
-    background: var(--accent);
-    border: 0;
-    border-radius: 10px;
-}
-
-.primary-button:hover:not(:disabled) {
-    background: var(--accent-hover);
-}
-
-.primary-button:disabled {
-    cursor: not-allowed;
-    opacity: 0.4;
-}
-
-.selection-status {
-    align-items: center;
-    gap: 20px;
-}
-
-.level-filter {
-    margin-bottom: 1.5rem;
-}
-
-.level-filter-label {
-    margin-bottom: 0.75rem;
-    font-weight: 700;
-}
-
-.level-filter-options {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 8px;
-}
-
-.level-filter-button {
-    padding: 8px 12px;
-
-    background: white;
-    border: 1px solid #cfcfcf;
-    border-radius: 999px;
-
-    cursor: pointer;
-    font: inherit;
-    font-weight: 600;
-}
-
-.level-filter-button:hover {
-    border-color: #777;
-}
-
-.level-filter-button.active {
-    color: white;
-    background: var(--accent);
-    border-color: var(--accent);
-}
-
-#selection-counter {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 8px 20px;
-}
-
-.hidden {
-    display: none !important;
-}
-
-/* Practice screen */
+/* ==================================================
+   8. Practice screen
+   ================================================== */
 
 .practice-heading {
-    text-align: center;
     margin-bottom: 1rem;
+    text-align: center;
 }
 
 .practice-heading h2 {
@@ -369,9 +414,10 @@ h2 {
 
 .practice-mode-label {
     margin: 0 0 0.35rem;
+
     font-weight: 700;
-    text-transform: uppercase;
     letter-spacing: 0.05em;
+    text-transform: uppercase;
 }
 
 .practice-timer {
@@ -412,8 +458,6 @@ h2 {
 }
 
 .practice-trick-item {
-    counter-increment: practice-tricks;
-
     display: grid;
     grid-template-columns: auto 1fr auto;
     align-items: center;
@@ -421,24 +465,27 @@ h2 {
 
     padding: 1rem;
 
+    background: var(--surface);
     border: 1px solid #d8d8d8;
     border-radius: 12px;
-    background: white;
+
+    counter-increment: practice-tricks;
 }
 
 .practice-trick-item::before {
-    content: counter(practice-tricks);
-
     display: grid;
     place-items: center;
 
     width: 2rem;
     height: 2rem;
 
-    border-radius: 50%;
-    background: var(--accent);
     color: white;
+    background: var(--accent);
+    border-radius: 50%;
+
     font-weight: 700;
+
+    content: counter(practice-tricks);
 }
 
 .practice-trick-name {
@@ -460,95 +507,21 @@ h2 {
     margin-top: 1.5rem;
 }
 
-@media (max-width: 600px) {
-    .practice-trick-item {
-        grid-template-columns: auto 1fr;
-    }
 
-    .practice-trick-level {
-        grid-column: 2;
-    }
-
-    .practice-actions {
-        flex-direction: column;
-    }
-
-    .practice-actions button {
-        width: 100%;
-    }
-}
-
-.secondary-button {
-    padding: 0.75rem 1.1rem;
-
-    background: transparent;
-    color: var(--accent);
-
-    border: 2px solid var(--accent);
-    border-radius: 10px;
-
-    font: inherit;
-    font-weight: 700;
-
-    cursor: pointer;
-
-    transition:
-        background-color 0.2s ease,
-        color 0.2s ease,
-        transform 0.2s ease;
-}
-
-.secondary-button:hover {
-    background: var(--accent);
-    color: white;
-}
-
-.secondary-button:active {
-    transform: translateY(1px);
-}
-
-.secondary-button:disabled {
-    opacity: 0.5;
-    cursor: not-allowed;
-}
-
-.trick-row {
-    cursor: pointer;
-    user-select: none;
-}
-
-.trick-row:hover {
-    background: #f5f8fc;
-}
-
-.trick-row {
-    cursor: pointer;
-    user-select: none;
-    transition: background-color 0.15s ease;
-}
-
-.trick-row:hover {
-    background-color: #f5f8fc;
-}
-
-.trick-row.selected {
-    background-color: #eef4ff;
-}
-
-.trick-row:has(.trick-checkbox:disabled) {
-    cursor: not-allowed;
-    opacity: 0.6;
-}
+/* ==================================================
+   9. Results screen
+   ================================================== */
 
 .results-header {
-    text-align: center;
     margin-bottom: 2rem;
+    text-align: center;
 }
 
 #results-content {
     display: flex;
     flex-direction: column;
     gap: 0.75rem;
+
     margin-bottom: 2rem;
 }
 
@@ -580,36 +553,6 @@ h2 {
     gap: 0.75rem;
 }
 
-.result-name {
-    font-weight: 500;
-}
-
-.result-points {
-    font-weight: 700;
-    color: var(--accent);
-}
-.results-score {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-
-    margin: 2rem 0;
-    padding: 1rem;
-
-    border-top: 2px solid #ddd;
-    font-size: 1.3rem;
-    font-weight: 700;
-}
-
-#results-total-score {
-    font-size: 2rem;
-}
-.results-actions {
-    display: flex;
-    justify-content: center;
-    gap: 1rem;
-    flex-wrap: wrap;
-}
 .result-info {
     display: flex;
     flex-direction: column;
@@ -619,6 +562,15 @@ h2 {
 .result-level,
 .result-name {
     display: block;
+}
+
+.result-name {
+    font-weight: 500;
+}
+
+.result-points {
+    color: var(--accent);
+    font-weight: 700;
 }
 
 .score-breakdown {
@@ -632,8 +584,8 @@ h2 {
 .score-line,
 .score-total {
     display: flex;
-    justify-content: space-between;
     align-items: center;
+    justify-content: space-between;
     gap: 1rem;
 }
 
@@ -642,18 +594,73 @@ h2 {
 }
 
 .bonus-line {
-    font-weight: 700;
     color: var(--accent);
+    font-weight: 700;
 }
 
 .score-total {
     margin-top: 1rem;
     padding-top: 1rem;
+
     border-top: 2px solid #ddd;
+
     font-size: 1.3rem;
     font-weight: 700;
 }
 
 #results-total-score {
     font-size: 2rem;
+}
+
+.results-actions {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 1rem;
+}
+
+
+/* ==================================================
+   10. Responsive styles
+   ================================================== */
+
+@media (max-width: 700px) {
+    .app-container {
+        padding: 36px 0;
+    }
+
+    .mode-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .mode-card {
+        min-height: 220px;
+    }
+
+    .selection-status {
+        align-items: stretch;
+        flex-direction: column;
+    }
+
+    .primary-button {
+        width: 100%;
+    }
+}
+
+@media (max-width: 600px) {
+    .practice-trick-item {
+        grid-template-columns: auto 1fr;
+    }
+
+    .practice-trick-level {
+        grid-column: 2;
+    }
+
+    .practice-actions {
+        flex-direction: column;
+    }
+
+    .practice-actions button {
+        width: 100%;
+    }
 }
